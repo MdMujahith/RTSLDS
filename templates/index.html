@@ -3,47 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Language Detector</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.1/socket.io.min.js"></script>
+    <title>Sign Language Translator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <header class="header">
-            <h1 class="title">Sign Language Detector</h1>
-            <div>
-                <button id="aslBtn" class="btn">ASL</button>
-                <button id="islBtn" class="btn">ISL</button>
+        <div class="header">
+            <h1 class="title">Sign Language Translator</h1>
+            <div class="d-flex">
+                <button id="settingsBtn" class="btn btn-outline-primary ms-2">
+                    <i class="bi bi-gear"></i> Settings
+                </button>
             </div>
-        </header>
-
-        <div class="webcam-container">
-            <img id="videoElement" src="" alt="Live Video Feed">
         </div>
 
-        <div class="status">
-            <span id="statusIndicator" class="status-indicator status-inactive"></span>
-            <span id="statusText">Detection Inactive</span>
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="btn-group w-100" role="group">
+                    <button type="button" class="btn btn-outline-primary active" id="aslBtn">ASL</button>
+                    <button type="button" class="btn btn-outline-primary" id="islBtn">ISL</button>
+                </div>
+            </div>
         </div>
 
-        <button id="startStopBtn" class="btn-primary">Start Detection</button>
-
-        <div class="translator-output">
-            <h2>Detected Sign:</h2>
-            <p id="detectedSigns">Waiting...</p>
-
-            <h2>Grammar Corrected:</h2>
-            <p id="translatedText">Waiting...</p>
-
-            <h2>Confidence:</h2>
-            <div class="confidence-meter">
-                <div id="confidenceFill" class="confidence-fill"></div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="webcam-container">
+                    <img id="videoElement" src="" alt="Webcam Feed">
+                </div>
+                
+                <div class="d-flex justify-content-between mt-3">
+                    <button id="startStopBtn" class="btn btn-primary">
+                        <span id="startStopText">Start Detection</span>
+                    </button>
+                    <button id="captureBtn" class="btn btn-outline-primary">
+                        Capture
+                    </button>
+                    <button id="resetBtn" class="btn btn-outline-danger">
+                        Reset Detection
+                    </button>
+                </div>
+                
+                <div class="mt-3">
+                    <div id="statusContainer">
+                        <span class="status-indicator status-inactive" id="statusIndicator"></span>
+                        <span id="statusText">Detection Inactive</span>
+                    </div>
+                </div>
             </div>
-            <p id="confidenceValue">0%</p>
+            
+            <div class="col-md-4">
+                <div class="translator-output">
+                    <h4>Detected Signs</h4>
+                    <div id="detectedSigns" style="font-family: monospace; letter-spacing: 2px; font-size: 1.2rem; min-height: 40px;">
+                        Waiting for detection...
+                    </div>
+                    
+                    <div class="confidence-meter mt-3">
+                        <div class="confidence-fill" id="confidenceFill" style="width: 0%"></div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <small>Confidence</small>
+                        <small id="confidenceValue">0%</small>
+                    </div>
+                    
+                    <h4 class="mt-4">Translated Sentence</h4>
+                    <div id="translatedText" style="font-size: 1.2rem; min-height: 60px;">
+                        Waiting for translation...
+                    </div>
+                    
+                    <div class="mt-3">
+                        <h5>Translation History</h5>
+                        <div id="historyContainer" style="max-height: 150px; overflow-y: auto;">
+                            <div class="text-muted text-center py-3">No history yet</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-            <audio id="audioPlayer"></audio>
+        <audio id="audioPlayer" controls></audio>
+        
+        <div class="footer">
+            Powered by AI • Bridging communication barriers
         </div>
     </div>
-    <script src="script.js"></script>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
