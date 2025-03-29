@@ -1,0 +1,131 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #212529;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #4361ee;
+    margin-bottom: 0;
+}
+
+.webcam-container {
+    border-radius: 15px;
+    overflow: hidden;
+    border: 2px solid #4361ee;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    background-color: #343a40;
+    height: 360px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+#videoElement {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.btn-primary {
+    background-color: #4361ee;
+    border-color: #4361ee;
+}
+
+.btn-outline-primary {
+    color: #4361ee;
+    border-color: #4361ee;
+}
+
+.btn-outline-primary:hover, .btn-outline-primary.active {
+    background-color: #4361ee;
+    color: white;
+}
+
+.translator-output {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    margin-top: 20px;
+    height: 100%;
+}
+
+.confidence-meter {
+    margin-top: 10px;
+    height: 10px;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.confidence-fill {
+    height: 100%;
+    background-color: #4361ee;
+    transition: width 0.3s ease;
+}
+
+.status-indicator {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.status-active {
+    background-color: #38b000;
+    animation: pulse 2s infinite;
+}
+
+.status-inactive {
+    background-color: #d90429;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(56, 176, 0, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(56, 176, 0, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(56, 176, 0, 0);
+    }
+}
+
+.history-item {
+    padding: 8px;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 30px;
+    color: #6c757d;
+    font-size: 0.8rem;
+    padding: 10px 0;
+    border-top: 1px solid #dee2e6;
+}
+
+#audioPlayer {
+    display: none; /* Hidden but will play audio */
+}
