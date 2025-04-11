@@ -44,7 +44,7 @@ def scale_coords(img1_shape, coords, img0_shape):
     coords[:, :4] = coords[:, :4].clip(min=0) 
     return coords
 
-# Load models
+# This Load models
 try:
     print("Loading YOLOv5 model for ISL...")
     isl_model_path = Path(r"C:\Users\mujah\FYP\Detection\isl.pt")
@@ -86,13 +86,8 @@ def generate_audio(text):
 
 def process_detections(detection_string):
     """Convert raw detections to meaningful text"""
-    # This is where you'd integrate your GenAI API
-    # For now, we'll use some simple mappings
     
     simple_mapping = {
-        "A": "Hello",
-        "B": "How are you",
-        "C": "Thank you",
         "HELLO": "Hello, nice to meet you",
         "THANK": "Thank you very much",
         "HELP": "I need some help please"
