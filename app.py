@@ -47,7 +47,7 @@ def scale_coords(img1_shape, coords, img0_shape):
 # This Load models
 try:
     print("Loading YOLOv5 model for ISL...")
-    isl_model_path = Path(r"C:\Users\mujah\FYP\Detection\isl.pt")
+    isl_model_path = Path(r"Your Model Path") # Change this to Ypur actual model path
     device = select_device('cpu') 
     isl_model = attempt_load(str(isl_model_path), device)
     isl_model.eval()
@@ -60,7 +60,7 @@ try:
     print(f"Loaded YOLOv5 ISL model with {len(isl_class_names)} classes")
     
     print("Loading YOLOv8 model for ASL...")
-    asl_model_path = Path(r"C:\Users\mujah\FYP\Detection\asl1.pt")
+    asl_model_path = Path(r"Your Model Path") # Change this to Ypur actual model path
     asl_model = YOLO(str(asl_model_path))
     
     print("Both models loaded successfully!")
