@@ -25,7 +25,7 @@ def scale_coords(img1_shape, coords, img0_shape):
 try:
     # Load YOLOv5 model for ISL
     print("Loading YOLOv5 model for ISL...")
-    isl_model_path = Path(r"C:\Users\mujah\FYP\Detection\isl.pt")
+    isl_model_path = Path(r"C:\Users\<Your Name>\FYP\Detection\isl.pt")
     device = select_device('cpu') 
     isl_model = attempt_load(str(isl_model_path), device)
     isl_model.eval()
@@ -39,7 +39,7 @@ try:
     
     # Load YOLOv8 model for ASL
     print("Loading YOLOv8 model for ASL...")
-    asl_model_path = Path(r"C:\Users\mujah\FYP\Detection\asl1.pt")  # Update with correct path
+    asl_model_path = Path(r"C:\Users\<Your Name>FYP\Detection\asl1.pt")  # Update with correct path
     asl_model = YOLO(str(asl_model_path))
     
     print("Both models loaded successfully!")
@@ -158,4 +158,5 @@ finally:
     if 'cap' in locals():
         cap.release()
     cv2.destroyAllWindows()
+
     print("Cleanup complete")
