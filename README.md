@@ -1,104 +1,124 @@
-# Real-Time Sign Language Detection System
+# 🧠 Real-Time Sign Language Detection System  
 
-This is a Flask-based project that detects sign language in real-time using a webcam. It supports ASL (American Sign Language) and ISL (Indian Sign Language), detects gestures using trained YOLO models, and converts the detected signs into both text and speech. 
-==========================
-🔧 SETUP INSTRUCTIONS
-==========================
+A **Flask-based real-time application** that detects and interprets **sign language gestures** using your webcam.  
+The system supports both **ASL (American Sign Language)** and **ISL (Indian Sign Language)** and uses **trained YOLO models** for gesture recognition.  
+Detected signs are instantly converted into **text and speech**, enabling smooth and inclusive communication.  
 
-✅ Prerequisites:
-------------------
-- Python 3.8 or later
-- A webcam (built-in or USB)
-- pip (Python package manager)
-- git (to clone the repo)
+---
 
-✅ Step 1: Clone the Repository
--------------------------------
-Open your terminal or command prompt and run:
+## 🔧 Setup Instructions  
 
-    git clone https://github.com/MdMujahith/RTSLDS.git
-    cd RTSLDS
+### ✅ Prerequisites  
+Make sure you have the following installed:  
+- Python **3.8+**  
+- **Webcam** (built-in or external)  
+- **pip** (Python package manager)  
+- **git** (for cloning the repository)  
 
-✅ Step 2: Create a Virtual Environment (Recommended)
------------------------------------------------------
-    python -m venv venv
+---
 
+### ✅ Step 1: Clone the Repository  
+```
+git clone https://github.com/MdMujahith/RTSLDS.git
+cd RTSLDS
+```
+### ✅ Step 2: Create a Virtual Environment (Recommended)
+python -m venv venv
 Activate the virtual environment:
 
-- On Windows:
-    venv\Scripts\activate
+Windows:
+```
+venv\Scripts\activate
 
-- On macOS/Linux:
-    source venv/bin/activate
+```
+macOS/Linux:
+```
+source venv/bin/activate
 
-✅ Step 3: Install Python Dependencies
---------------------------------------
-Install all required packages:
+```
+### ✅ Step 3: Install Dependencies
+Install all required Python packages:
 
-    pip install -r requirements.txt
+```
+pip install -r requirements.txt
 
-If the file is missing, manually install:
+```
+If the file is missing, install manually:
 
-    pip install flask opencv-python pyttsx3 ultralytics torch torchvision
+```
+pip install flask opencv-python pyttsx3 ultralytics torch torchvision
 
-✅ Step 4: Add Trained Models
------------------------------
-Download or train your YOLOv5 or YOLOv8 models for ASL and ISL.
+```
+### ✅ Step 4: Add Trained Models
+Download or train your YOLOv5/YOLOv8 models for ASL and ISL detection.
 
-- Save the ASL model as: `models/asl_model.pt`
-- Save the ISL model as: `models/isl_model.pt`
+Place them in the models/ folder:
+```
+models/
+ ├── asl_model.pt
+ └── isl_model.pt
+ ```
+💡 You can train models using Roboflow + Google Colab and export them in YOLO format.
 
-(You can train models using Roboflow + Google Colab and export them in YOLO format.)
-
-✅ Step 5: Run the Project
---------------------------
+### ✅ Step 5: Run the Application
 Start the Flask server:
+```
+python app.py
+```
+Once running, open your browser and go to:
+👉 http://127.0.0.1:5000/
 
-    python app.py
+### ✅ Step 6: Test the Detection
+Select ASL or ISL mode.
 
-Now open your browser and visit:
+Allow camera access in your browser.
 
-    http://127.0.0.1:5000/
+Show a trained gesture to the webcam.
 
-✅ Step 6: Test the Detection
------------------------------
-- Choose ASL or ISL
-- Allow your camera to start
-- Show any trained sign to the webcam
-- The detected word will be shown and spoken
+The detected sign will appear as text and be spoken aloud.
 
-==========================
-==========================
-📌 COMMON ISSUES
-==========================
+## 🎥 Demo Video  
+<video width="720" height="400" controls>
+  <source src="Demo_Video.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
-❌ Webcam not opening:
-- Try changing `cv2.VideoCapture(0)` to `cv2.VideoCapture(1)`
-- Ensure no other app is using the camera
+ ## ⚙️ Common Issues & Fixes
+❌ Webcam Not Opening
+Try changing cv2.VideoCapture(0) to cv2.VideoCapture(1)
 
-❌ No detection happening:
-- Make sure lighting is good
-- Confirm the sign used is from the trained model
+Ensure no other app is using your webcam
 
-❌ Text-to-speech not working:
-- pyttsx3 works offline, but check if engine is initializing
-- Try installing `espeak`, `pyaudio`, or use gTTS for online TTS
+❌ No Detection
+Improve lighting conditions
 
-==========================
-📚 TRAINING YOUR OWN MODEL
-==========================
+Confirm the gesture exists in your trained dataset
 
-1. Go to https://roboflow.com
-2. Upload your sign gesture images
-3. Annotate and export in YOLOv5 format
-4. Use Google Colab and train using YOLOv5 or YOLOv8
-5. Download the `best.pt` model and place it in `models/`
+❌ Text-to-Speech Not Working
+pyttsx3 works offline, but ensure it initializes properly
 
-==========================
-🚀 FUTURE IDEAS
-==========================
+Install missing dependencies:
+```
+pip install espeak pyaudio
+```
+Alternatively, use ```gTTS``` for online text-to-speech
 
-- Add more complex sentence recognition
-- Deploy on Streamlit Cloud or Render
-- Add mobile support
-- Improve UI/UX with feedback system
+#### 🧩 Train Your Own Model
+Go to Roboflow
+
+Upload your sign gesture images
+
+Annotate your dataset and export it in YOLOv5 format
+
+Train using YOLOv5 or YOLOv8 on Google Colab
+
+Download the trained best.pt file and place it inside the models/ folder
+
+#### 🚀 Future Enhancements
+Add sentence-level recognition
+
+Deploy via Streamlit Cloud or Render
+
+Add mobile support
+
+Improve UI/UX with feedback and analytics
