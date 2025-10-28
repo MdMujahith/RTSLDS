@@ -78,10 +78,11 @@ Show a trained gesture to the webcam.
 The detected sign will appear as text and be spoken aloud.
 
 ## 🎥 Demo Video  
-<video width="720" height="400" controls>
-  <source src="Demo_Video.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+Experience the project in action:  
+
+🎬 [**Watch Demo Video (MP4)**](Demo_Video.mp4)
+
+> The demo video is included in this repository under `Demo_Video.mp4`.
 
  ## ⚙️ Common Issues & Fixes
 ❌ Webcam Not Opening
