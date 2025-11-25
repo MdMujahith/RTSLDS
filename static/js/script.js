@@ -1,154 +1,191 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Connect to Socket.IO server
+    // --- Configuration ---
     const socket = io();
     
-    // Elements
+    // --- Elements ---
     const videoElement = document.getElementById('videoElement');
+    const videoPlaceholder = document.getElementById('videoPlaceholder');
     const startStopBtn = document.getElementById('startStopBtn');
     const startStopText = document.getElementById('startStopText');
     const captureBtn = document.getElementById('captureBtn');
     const resetBtn = document.getElementById('resetBtn');
     const statusIndicator = document.getElementById('statusIndicator');
     const statusText = document.getElementById('statusText');
+    const connectionStatus = document.getElementById('connectionStatus');
+    
     const detectedSigns = document.getElementById('detectedSigns');
     const translatedText = document.getElementById('translatedText');
     const confidenceFill = document.getElementById('confidenceFill');
     const confidenceValue = document.getElementById('confidenceValue');
     const historyContainer = document.getElementById('historyContainer');
     const audioPlayer = document.getElementById('audioPlayer');
+    
     const aslBtn = document.getElementById('aslBtn');
     const islBtn = document.getElementById('islBtn');
     
-    // State
+    // --- State ---
     let isRunning = false;
     let detectionHistory = [];
-    
-    // Socket.IO events
-    socket.on('connect', function() {
-        console.log('Connected to server');
+
+    // --- Socket Events ---
+
+    socket.on('connect', () => {
+        console.log('✅ Connected to backend');
+        connectionStatus.textContent = "Online";
+        connectionStatus.className = "badge bg-success";
     });
-    
-    socket.on('status', function(data) {
-        console.log('Status:', data.message);
+
+    socket.on('disconnect', () => {
+        console.log('❌ Disconnected');
+        connectionStatus.textContent = "Offline";
+        connectionStatus.className = "badge bg-danger";
+        stopDetectionUI(); // Safety: stop UI if connection drops
     });
-    
-    socket.on('video_frame', function(data) {
+
+    // Receive Video Stream
+    socket.on('video_frame', (data) => {
         if (isRunning) {
+            // Switch placeholder -> video
+            videoPlaceholder.style.display = 'none';
+            videoElement.style.display = 'block';
             videoElement.src = `data:image/jpeg;base64,${data.frame}`;
         }
     });
-    
-    socket.on('detection_update', function(data) {
-        // Update detected signs
-        if (data.raw_detection) {
-            detectedSigns.textContent = data.raw_detection;
-        } else {
-            detectedSigns.textContent = "No signs detected";
-        }
+
+    // Receive Detection Data
+    socket.on('detection_update', (data) => {
+        // 1. Update Sign Text
+        detectedSigns.textContent = data.raw_detection || "...";
         
-        // Update confidence meter
-        const confidencePercent = Math.round(data.confidence * 100);
-        confidenceFill.style.width = `${confidencePercent}%`;
-        confidenceValue.textContent = `${confidencePercent}%`;
+        // 2. Update Confidence
+        const confidence = Math.round((data.confidence || 0) * 100);
+        confidenceFill.style.width = `${confidence}%`;
+        confidenceValue.textContent = `${confidence}%`;
         
-        // Update translated text
+        // Color code the confidence bar
+        if (confidence > 80) confidenceFill.className = "progress-bar bg-success";
+        else if (confidence > 50) confidenceFill.className = "progress-bar bg-warning";
+        else confidenceFill.className = "progress-bar bg-danger";
+
+        // 3. Update Sentence & History
         if (data.processed_text) {
             translatedText.textContent = data.processed_text;
             
-            // Add to history if it's new and not empty
+            // Add to history if it's a new unique sentence
             if (data.processed_text.trim() !== '' && !detectionHistory.includes(data.processed_text)) {
-                detectionHistory.unshift(data.processed_text);
-                if (detectionHistory.length > 5) {
-                    detectionHistory.pop();
-                }
-                updateHistory();
+                addToHistory(data.processed_text);
             }
-        } else {
-            translatedText.textContent = "Waiting for translation...";
         }
     });
-    
-    socket.on('audio_update', function(data) {
-        // Play the audio automatically
-        const audioSrc = `data:audio/mp3;base64,${data.audio_data}`;
-        audioPlayer.src = audioSrc;
-        audioPlayer.play().catch(e => console.error('Audio playback error:', e));
-    });
-    
-    // Button event listeners
-    startStopBtn.addEventListener('click', function() {
-        if (isRunning) {
-            stopDetection();
-        } else {
-            startDetection();
+
+    // Receive Audio
+    socket.on('audio_update', (data) => {
+        try {
+            audioPlayer.src = `data:audio/mp3;base64,${data.audio_data}`;
+            audioPlayer.play().catch(e => console.warn("Auto-play blocked:", e));
+        } catch (err) {
+            console.error("Audio error:", err);
         }
     });
-    
-    captureBtn.addEventListener('click', function() {
-        // Implement capture functionality if needed
-        console.log('Capture button clicked');
+
+    // --- Button Actions ---
+
+    startStopBtn.addEventListener('click', () => {
+        if (isRunning) stopDetection();
+        else startDetection();
     });
-    
-    resetBtn.addEventListener('click', function() {
+
+    resetBtn.addEventListener('click', () => {
         socket.emit('reset_detection');
-        detectedSigns.textContent = "Waiting for detection...";
-        translatedText.textContent = "Waiting for translation...";
+        detectedSigns.textContent = "...";
+        translatedText.textContent = "Waiting for input...";
         confidenceFill.style.width = "0%";
         confidenceValue.textContent = "0%";
+        clearHistoryUI();
     });
-    
-    // Mode selection
-    aslBtn.addEventListener('click', function() {
+
+    // Capture Screenshot functionality
+    captureBtn.addEventListener('click', () => {
+        if (!isRunning || !videoElement.src) return;
+        
+        const link = document.createElement('a');
+        link.download = `sign_language_${new Date().getTime()}.jpg`;
+        link.href = videoElement.src;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+
+    aslBtn.addEventListener('click', () => {
         setActiveButton(aslBtn);
         socket.emit('set_mode', { mode: 'asl' });
     });
-    
-    islBtn.addEventListener('click', function() {
+
+    islBtn.addEventListener('click', () => {
         setActiveButton(islBtn);
         socket.emit('set_mode', { mode: 'isl' });
     });
-    
-    // Functions
+
+    // --- Helper Functions ---
+
     function startDetection() {
         socket.emit('start_detection');
         isRunning = true;
-        startStopText.textContent = "Stop Detection";
-        statusIndicator.classList.remove('status-inactive');
-        statusIndicator.classList.add('status-active');
-        statusText.textContent = "Detection Active";
+        
+        // UI Updates
+        startStopBtn.innerHTML = '<i class="bi bi-stop-fill"></i> Stop Detection';
+        startStopBtn.classList.replace('btn-primary', 'btn-danger');
+        
+        captureBtn.disabled = false;
+        
+        statusIndicator.classList.replace('status-inactive', 'status-active');
+        statusText.textContent = "Detecting...";
     }
-    
+
     function stopDetection() {
         socket.emit('stop_detection');
-        isRunning = false;
-        startStopText.textContent = "Start Detection";
-        statusIndicator.classList.remove('status-active');
-        statusIndicator.classList.add('status-inactive');
-        statusText.textContent = "Detection Inactive";
+        stopDetectionUI();
     }
-    
+
+    function stopDetectionUI() {
+        isRunning = false;
+        
+        // Switch video -> placeholder
+        videoElement.style.display = 'none';
+        videoPlaceholder.style.display = 'block';
+        videoElement.src = ""; 
+
+        // UI Updates
+        startStopBtn.innerHTML = '<i class="bi bi-play-fill"></i> Start Detection';
+        startStopBtn.classList.replace('btn-danger', 'btn-primary');
+        
+        captureBtn.disabled = true;
+        
+        statusIndicator.classList.replace('status-active', 'status-inactive');
+        statusText.textContent = "Ready";
+    }
+
     function setActiveButton(activeBtn) {
-        [aslBtn, islBtn].forEach(btn => {
-            btn.classList.remove('active');
-        });
+        [aslBtn, islBtn].forEach(btn => btn.classList.remove('active'));
         activeBtn.classList.add('active');
     }
-    
-    function updateHistory() {
-        // Clear history container
-        historyContainer.innerHTML = '';
+
+    function addToHistory(text) {
+        // Remove empty state message
+        if (detectionHistory.length === 0) historyContainer.innerHTML = '';
+
+        detectionHistory.unshift(text);
+        if (detectionHistory.length > 20) detectionHistory.pop(); // Max 20 items
+
+        const div = document.createElement('div');
+        div.className = 'history-item';
+        div.innerHTML = `<strong>${text}</strong> <small class="text-muted d-block" style="font-size:0.75rem">${new Date().toLocaleTimeString()}</small>`;
         
-        if (detectionHistory.length === 0) {
-            historyContainer.innerHTML = '<div class="text-muted text-center py-3">No history yet</div>';
-            return;
-        }
-        
-        // Add each history item
-        detectionHistory.forEach((item, index) => {
-            const historyItem = document.createElement('div');
-            historyItem.className = 'history-item';
-            historyItem.textContent = item;
-            historyContainer.appendChild(historyItem);
-        });
+        historyContainer.prepend(div);
+    }
+
+    function clearHistoryUI() {
+        detectionHistory = [];
+        historyContainer.innerHTML = '<div class="text-center text-muted py-5 small"><i class="bi bi-clock-history mb-2 d-block fs-4"></i>History cleared</div>';
     }
 });

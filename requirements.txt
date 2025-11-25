@@ -1,0 +1,35 @@
+#Web Framework
+
+Flask>=3.0.0
+Flask-SocketIO>=5.3.6
+simple-websocket>=1.0.0
+
+#Computer Vision & AI
+
+#We need the latest OpenCV to support Python 3.13
+
+opencv-python>=4.10.0.84
+
+#We need the latest Ultralytics
+
+ultralytics>=8.3.0
+
+#PyTorch 2.5+ is required for Python 3.13
+
+torch>=2.5.0
+torchvision>=0.20.0
+
+#We allow NumPy 2.0+ because Python 3.13 requires it
+
+numpy>=2.1.0
+pandas>=2.2.0
+Pillow>=10.4.0
+
+#Audio
+
+gTTS>=2.4.0
+
+#Utilities
+
+psutil>=6.0.0
+requests>=2.32.0

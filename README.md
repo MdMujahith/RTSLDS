@@ -1,125 +1,111 @@
-# 🧠 Real-Time Sign Language Detection System  
+# 🧠 Real-Time Sign Language Detection System (RTSLDS)
 
-A **Flask-based real-time application** that detects and interprets **sign language gestures** using your webcam.  
-The system supports both **ASL (American Sign Language)** and **ISL (Indian Sign Language)** and uses **trained YOLO models** for gesture recognition.  
-Detected signs are instantly converted into **text and speech**, enabling smooth and inclusive communication.  
+A **Flask-based real-time AI application** that detects and interprets sign language gestures using a webcam. The system supports both **ASL (American Sign Language)** and **ISL (Indian Sign Language)** using trained YOLO models. Detected signs are instantly converted into **text and speech**, enabling smooth and inclusive communication.
 
----
+## 🎥 Demo Video
 
-## 🔧 Setup Instructions  
+See the project in action!
 
-### ✅ Prerequisites  
-Make sure you have the following installed:  
-- Python **3.8+**  
-- **Webcam** (built-in or external)  
-- **pip** (Python package manager)  
-- **git** (for cloning the repository)  
+[**Click here to watch the Demo Video**](.Demo_Video.mp4)
 
----
+*(Note: Ensure the file `Demo_Video.mp4` is present in the main project folder)*
 
-### ✅ Step 1: Clone the Repository  
-```
-git clone https://github.com/MdMujahith/RTSLDS.git
+## 🚀 Features
+
+*   **Real-Time Detection:** Live webcam feed processing with zero lag.
+*   **Multi-Model Support:** Switch instantly between ASL (YOLOv8) and ISL (YOLOv5) models.
+*   **Text-to-Speech (TTS):** Automatically speaks the detected sentences using Google Text-to-Speech (gTTS).
+*   **Web Interface:** Clean, responsive UI built with Bootstrap and Socket.IO.
+*   **Smart Debouncing:** Prevents flickering text by stabilizing detection outputs.
+
+## 🔧 Setup Instructions
+
+### 1. Prerequisites
+
+Ensure you have the following installed:
+
+*   Python **3.10** or **3.11** (Recommended for AI libraries)
+*   **Git** (for cloning)
+*   A webcam
+
+### 2. Clone the Repository
+
+```bash
+git clone [https://github.com/MdMujahith/RTSLDS.git](https://github.com/MdMujahith/RTSLDS.git)
 cd RTSLDS
+'
 ```
-### ✅ Step 2: Create a Virtual Environment (Recommended)
-python -m venv venv
-Activate the virtual environment:
+### 3. Create a Virtual Environment
 
+It is highly recommended to use a virtual environment to keep dependencies clean.
+```bash
 Windows:
-```
+python -m venv venv
 venv\Scripts\activate
-
-```
-macOS/Linux:
-```
+Mac/Linux:
+python3 -m venv venv
 source venv/bin/activate
-
 ```
-### ✅ Step 3: Install Dependencies
-Install all required Python packages:
+### 4. Install Dependencies
 
-```
+Install all required Python packages.
 pip install -r requirements.txt
-
+Critical Step for YOLOv5: You must also clone the YOLOv5 repository inside your project folder manually because it is a required dependency for the ISL model logic.
+```bash
+git clone https://github.com/ultralytics/yolov5
+pip install -r yolov5/requirements.txt
 ```
-If the file is missing, install manually:
 
+### 5. Add Trained Models
+
+You must have your trained .pt model files ready. Create a models folder and place them there.
+
+Required Folder Structure:
+```bash
+/RTSLDS
+├── models/
+│   ├── yolov8_asl_best.pt  <-- Your ASL Model
+│   └── yolov5_isl_best.pt  <-- Your ISL Model
+├── yolov5/                 <-- Cloned from GitHub
+├── app.py
+└── requirements.txt
 ```
-pip install flask opencv-python pyttsx3 ultralytics torch torchvision
+### 6. Run the Application
 
-```
-### ✅ Step 4: Add Trained Models
-Download or train your YOLOv5/YOLOv8 models for ASL and ISL detection.
-
-Place them in the models/ folder:
-```
-models/
- ├── asl_model.pt
- └── isl_model.pt
- ```
-💡 You can train models using Roboflow + Google Colab and export them in YOLO format.
-
-### ✅ Step 5: Run the Application
 Start the Flask server:
-```
+```bash
 python app.py
 ```
-Once running, open your browser and go to:
-👉 http://127.0.0.1:5000/
+Once running, open your browser and go to: 👉 http://127.0.0.1:5000/
 
-### ✅ Step 6: Test the Detection
-Select ASL or ISL mode.
+🎥 Usage Guide
+- Select Mode: Click the "ASL" or "ISL" button on the dashboard to load the correct model.
+- Start Camera: Click "Start Detection". The system will initialize your webcam.
+- Perform Gestures: Show hand signs to the camera.
 
-Allow camera access in your browser.
+**View Results:**
+1. Live Label: Shows the currently detected letter/word.
+2. Confidence Bar: Shows how sure the AI is.
+3. Translation: Words are assembled into sentences in the text box.
+4. Audio: The system will speak the sentence aloud automatically.
 
-Show a trained gesture to the webcam.
+### ⚙️ Troubleshooting
+- ❌ Error: "ModuleNotFoundError: No module named 'yolov5'"
+Fix: You forgot to clone the YOLOv5 repo. Run git clone https://github.com/ultralytics/yolov5 inside your project folder.
+- ❌ Error: "Model not found"
+Fix: Ensure your model files are named exactly yolov8_asl_best.pt and yolov5_isl_best.pt and are inside the models/ folder.
+- ❌ Webcam Not Opening
+Fix: Ensure no other app (like Zoom/Teams) is using the camera. If you have multiple cameras, try changing cv2.VideoCapture(0) to 1 in app.py.
+- ❌ Audio Not Playing
+Fix: Browsers often block auto-playing audio. Click anywhere on the webpage to interact with it, which usually enables audio permissions.
 
-The detected sign will appear as text and be spoken aloud.
+### 🧩 Model Training (Optional)
 
-## 🎥 Demo Video  
-Experience the project in action:  
+If you want to train your own models from scratch:
+Dataset: Collect images using Roboflow or Kaggle.
+Training:
+ASL (YOLOv8): Use the ultralytics library.
+ISL (YOLOv5): Use the yolov5 repository scripts.
 
-🎬 [**Watch Demo Video (MP4)**](Demo_Video.mp4)
+👨‍💻 **Developed by** [Mohamed Mujahith](https://github.com/MdMujahith) and [Mohamed Ashbek ](https://github.com/ashbekT)
 
-> The demo video is included in this repository under `Demo_Video.mp4`.
-
- ## ⚙️ Common Issues & Fixes
-❌ Webcam Not Opening
-Try changing cv2.VideoCapture(0) to cv2.VideoCapture(1)
-
-Ensure no other app is using your webcam
-
-❌ No Detection
-Improve lighting conditions
-
-Confirm the gesture exists in your trained dataset
-
-❌ Text-to-Speech Not Working
-pyttsx3 works offline, but ensure it initializes properly
-
-Install missing dependencies:
-```
-pip install espeak pyaudio
-```
-Alternatively, use ```gTTS``` for online text-to-speech
-
-#### 🧩 Train Your Own Model
-Go to Roboflow
-
-Upload your sign gesture images
-
-Annotate your dataset and export it in YOLOv5 format
-
-Train using YOLOv5 or YOLOv8 on Google Colab
-
-Download the trained best.pt file and place it inside the models/ folder
-
-#### 🚀 Future Enhancements
-Add sentence-level recognition
-
-Deploy via Streamlit Cloud or Render
-
-Add mobile support
-
-Improve UI/UX with feedback and analytics
