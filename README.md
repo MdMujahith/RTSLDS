@@ -6,7 +6,7 @@ A **Flask-based real-time AI application** that detects and interprets sign lang
 
 See the project in action!
 
-[**Click here to watch the Demo Video**](.Demo_Video.mp4)
+[**Click here to watch the Demo Video**](Demo_Video.mp4)
 
 *(Note: Ensure the file `Demo_Video.mp4` is present in the main project folder)*
 
@@ -31,18 +31,20 @@ Ensure you have the following installed:
 ### 2. Clone the Repository
 
 ```bash
-git clone [https://github.com/MdMujahith/RTSLDS.git](https://github.com/MdMujahith/RTSLDS.git)
+git clone https://github.com/MdMujahith/RTSLDS.git
 cd RTSLDS
-'
 ```
 ### 3. Create a Virtual Environment
 
 It is highly recommended to use a virtual environment to keep dependencies clean.
+
+**Windows:**
 ```bash
-Windows:
 python -m venv venv
 venv\Scripts\activate
-Mac/Linux:
+```
+**Mac/Linux:**
+```bash
 python3 -m venv venv
 source venv/bin/activate
 ```
